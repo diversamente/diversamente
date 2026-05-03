@@ -213,6 +213,4 @@ export default function PsychProfilePage() {
     </>
   )
 }
-export function generateStaticParams() {
-  return []
-}
+

@@ -4,6 +4,10 @@ const nextConfig = {
     unoptimized: true,
   },
   output: 'export',
+  trailingSlash: true,
+  typescript: {
+    ignoreBuildErrors: false,
+  },
 }
 
 module.exports = nextConfig
