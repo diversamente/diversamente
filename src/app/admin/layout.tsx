@@ -2,15 +2,26 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Users, PlusCircle, FileText, DollarSign, LayoutDashboard, ArrowLeft } from 'lucide-react'
+import { Users, PlusCircle, FileText, DollarSign, LayoutDashboard, ArrowLeft, LogOut } from 'lucide-react'
 
 const MENU = [
-  { href: '/admin',          icon: LayoutDashboard, label: 'Dashboard' },
+  { href: '/admin',            icon: LayoutDashboard, label: 'Dashboard' },
   { href: '/admin/psicologos', icon: Users,           label: 'Psicólogos' },
-  { href: '/admin/nuevo',    icon: PlusCircle,       label: 'Nuevo Perfil' },
-  { href: '/admin/blog',     icon: FileText,         label: 'Blog' },
-  { href: '/admin/precios',  icon: DollarSign,       label: 'Precios' },
+  { href: '/admin/nuevo',      icon: PlusCircle,      label: 'Nuevo Perfil' },
+  { href: '/admin/blog',       icon: FileText,        label: 'Blog' },
+  { href: '/admin/precios',    icon: DollarSign,      label: 'Precios' },
 ]
+
+function cerrarSesion() {
+  // Fuerza al navegador a olvidar las credenciales Basic Auth
+  fetch('/admin', {
+    headers: {
+      Authorization: 'Basic ' + btoa('logout:logout'),
+    },
+  }).finally(() => {
+    window.location.href = '/admin'
+  })
+}
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
@@ -26,9 +37,17 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <span className="font-serif text-sm text-white">DiversaMente</span>
           <span className="text-sage-400 text-sm">/ Admin</span>
         </div>
-        <Link href="/" className="ml-auto flex items-center gap-1 text-sage-300 hover:text-white text-xs transition-colors">
-          <ArrowLeft size={13} /> Ver sitio
-        </Link>
+        <div className="ml-auto flex items-center gap-4">
+          <Link href="/" className="flex items-center gap-1 text-sage-300 hover:text-white text-xs transition-colors">
+            <ArrowLeft size={13} /> Ver sitio
+          </Link>
+          <button
+            onClick={cerrarSesion}
+            className="flex items-center gap-1 text-sage-300 hover:text-red-400 text-xs transition-colors"
+          >
+            <LogOut size={13} /> Cerrar sesión
+          </button>
+        </div>
       </header>
 
       <div className="flex flex-1">
