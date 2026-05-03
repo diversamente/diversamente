@@ -229,10 +229,9 @@ export default function ReservarPage() {
   return (
     <>
       <Navbar />
-      <div className="page-hero">
-        <div className="section-tag">Agenda tu sesión</div>
-        <h1 className="font-serif text-4xl text-sage-900 mt-2 mb-2">Reservar Cita</h1>
-        <p className="text-sage-400 text-base">Elige tu fecha, horario y psicólogo/a ideal</p>
+      <div className="bg-sage-50 py-5 px-6 text-center border-b border-sage-200">
+        <h1 className="font-serif text-2xl text-sage-900">Reservar Cita</h1>
+        <p className="text-sage-400 text-sm mt-1">Elige tu fecha, horario y psicólogo/a ideal</p>
       </div>
 
       <main className="container py-10 max-w-2xl mx-auto">
