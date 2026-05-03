@@ -60,10 +60,9 @@ export default function Navbar() {
         </ul>
 
         {/* CTA */}
-        <Link href="/psicologos" className="hidden md:inline-flex btn-primary text-sm py-2">
-          Reservar Cita
-        </Link>
-
+	<Link href="/reservar" className="hidden md:inline-flex btn-primary text-sm py-2">
+	  Reservar Cita
+	</Link>
         {/* Mobile menu button */}
         <button
           className="md:hidden p-2 text-sage-500"
@@ -87,9 +86,9 @@ export default function Navbar() {
               {l.label}
             </Link>
           ))}
-          <Link href="/psicologos" className="btn-primary text-sm py-2 w-full justify-center" onClick={() => setOpen(false)}>
-            Reservar Cita
-          </Link>
+	<Link href="/reservar" className="hidden md:inline-flex btn-primary text-sm py-2">
+	  Reservar Cita
+	</Link>
         </div>
       )}
     </nav>
