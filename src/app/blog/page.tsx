@@ -27,7 +27,7 @@ export default function BlogPage() {
 
   useEffect(() => { setPosts(getBlogPosts()) }, [])
 
-  const categories = [...new Set(posts.map(p => p.categoria))]
+  const categories = Array.from(new Set(posts.map(p => p.categoria)))
   const filtered = catFilter ? posts.filter(p => p.categoria === catFilter) : posts
 
   return (
