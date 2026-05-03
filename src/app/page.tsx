@@ -2,7 +2,7 @@ import Link from 'next/link'
 import Navbar from '@/components/layout/Navbar'
 import Footer from '@/components/layout/Footer'
 import PsychCard from '@/components/psychologist/PsychCard'
-import { SAMPLE_PSYCHOLOGISTS, AVATAR_COLORS, getInitials } from '@/lib/data'
+import { AVATAR_COLORS, getInitials, getAvatarColor } from '@/lib/data'
 
 const SPECIALTIES = [
   { icon: '🧠', name: 'Ansiedad',       filter: 'Ansiedad' },
@@ -17,8 +17,18 @@ const SPECIALTIES = [
 
 const INSURANCES = ['Banmédica', 'Cruz Blanca', 'Colmena', 'Consalud', 'Vida Tres']
 
+'use client'
+import { useState, useEffect } from 'react'
+
 export default function HomePage() {
-  const featured = SAMPLE_PSYCHOLOGISTS.slice(0, 3)
+  const [psychologists, setPsychologists] = useState<any[]>([])
+
+  useEffect(() => {
+    const { getPsychologists } = require('@/lib/store')
+    setPsychologists(getPsychologists().filter((p: any) => p.activo))
+  }, [])
+
+  const featured = psychologists.slice(0, 3)
 
   return (
     <>
@@ -63,7 +73,7 @@ export default function HomePage() {
 
           {/* Mini cards */}
           <div className="grid grid-cols-2 gap-3">
-            {SAMPLE_PSYCHOLOGISTS.slice(0, 4).map((p, i) => (
+            {psychologists.slice(0, 4).map((p, i) => (
               <div key={p.id} className="bg-white border border-sage-200 rounded-2xl p-4 text-center">
                 <div
                   className="w-14 h-14 rounded-full mx-auto mb-2 flex items-center justify-center
