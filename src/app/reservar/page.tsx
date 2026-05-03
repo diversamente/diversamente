@@ -238,133 +238,121 @@ export default function ReservarPage() {
       <main className="container py-10 max-w-2xl mx-auto">
         <StepBar current={step} />
 
-        {step === 0 && (
-          <div>
-            <div className="bg-white border border-sage-200 rounded-2xl p-6 mb-4">
-              <div className="flex items-center justify-between mb-6">
-                <button
-                  onClick={() => { if (viewMonth === 0) { setViewMonth(11); setViewYear(y => y - 1) } else setViewMonth(m => m - 1) }}
-                  className="p-2 rounded-lg hover:bg-sage-50 text-sage-500 transition-colors"
-                >
-                  <ChevronLeft size={20} />
-                </button>
-                <h2 className="font-serif text-xl text-sage-900">{MONTH_NAMES[viewMonth]} {viewYear}</h2>
-                <button
-                  onClick={() => { if (viewMonth === 11) { setViewMonth(0); setViewYear(y => y + 1) } else setViewMonth(m => m + 1) }}
-                  className="p-2 rounded-lg hover:bg-sage-50 text-sage-500 transition-colors"
-                >
-                  <ChevronRight size={20} />
-                </button>
-              </div>
+{step === 0 && (
+  <div className="bg-white border border-sage-200 rounded-2xl p-6">
+    <div className="flex gap-6 items-start">
+      {/* Calendario — columna izquierda */}
+      <div className="flex-1 min-w-0">
+        <div className="flex items-center justify-between mb-4">
+          <button onClick={() => { if (viewMonth === 0) { setViewMonth(11); setViewYear(y => y - 1) } else setViewMonth(m => m - 1) }} className="p-1.5 rounded-lg hover:bg-sage-50 text-sage-500">
+            <ChevronLeft size={16} />
+          </button>
+          <h2 className="font-serif text-base text-sage-900">{MONTH_NAMES[viewMonth]} {viewYear}</h2>
+          <button onClick={() => { if (viewMonth === 11) { setViewMonth(0); setViewYear(y => y + 1) } else setViewMonth(m => m + 1) }} className="p-1.5 rounded-lg hover:bg-sage-50 text-sage-500">
+            <ChevronRight size={16} />
+          </button>
+        </div>
+        <div className="grid grid-cols-7 mb-1">
+          {DAY_LABELS.map(d => (
+            <div key={d} className="text-center text-xs font-medium text-sage-400 py-1">{d}</div>
+          ))}
+        </div>
+        <div className="grid grid-cols-7">
+          {Array.from({ length: blanks }).map((_, i) => <div key={`b${i}`} className="aspect-square" />)}
+          {Array.from({ length: daysInMonth }).map((_, i) => {
+            const day   = i + 1
+            const date  = new Date(viewYear, viewMonth, day)
+            const past  = isPast(day)
+            const avail = !past && hasAvailability(day)
+            const sel   = selectedDate && dayKey(selectedDate) === dayKey(date)
+            const col   = (blanks + i) % 7
+            const isWeekend = col === 5 || col === 6
+            return (
+              <button key={day} disabled={past || !avail} onClick={() => handleSelectDate(date)}
+                className={`aspect-square flex flex-col items-center justify-center rounded-lg text-xs font-medium transition-all
+                  ${sel   ? 'bg-sage-500 text-white' :
+                    avail  ? `hover:bg-sage-100 cursor-pointer ${isWeekend ? 'text-sage-500' : 'text-sage-900'}` :
+                             `cursor-not-allowed ${isWeekend ? 'text-sage-300' : 'text-sage-200'}`}
+                `}>
+                <span>{day}</span>
+                {avail && !sel && <span className="w-1 h-1 rounded-full bg-sage-400 mt-0.5 block" />}
+                {!avail && !past && <span className="text-sage-300 text-xs leading-none">-</span>}
+              </button>
+            )
+          })}
+        </div>
+        <div className="flex items-center gap-4 mt-3 pt-3 border-t border-sage-100 text-xs text-sage-400">
+          <div className="flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-sage-400 inline-block" /> Disponible</div>
+          <div className="flex items-center gap-1"><span className="w-3 h-3 rounded bg-sage-500 inline-block" /> Seleccionado</div>
+        </div>
+      </div>
 
-              <div className="grid grid-cols-7 mb-1">
-                {DAY_LABELS.map(d => (
-                  <div key={d} className="text-center text-xs font-medium text-sage-400 py-2">{d}</div>
-                ))}
-              </div>
-
-              <div className="grid grid-cols-7">
-                {Array.from({ length: blanks }).map((_, i) => <div key={`b${i}`} className="aspect-square" />)}
-                {Array.from({ length: daysInMonth }).map((_, i) => {
-                  const day   = i + 1
-                  const date  = new Date(viewYear, viewMonth, day)
-                  const past  = isPast(day)
-                  const avail = !past && hasAvailability(day)
-                  const sel   = selectedDate && dayKey(selectedDate) === dayKey(date)
-                  const col   = (blanks + i) % 7
-                  const isWeekend = col === 5 || col === 6
-                  return (
-                    <button
-                      key={day}
-                      disabled={past || !avail}
-                      onClick={() => handleSelectDate(date)}
-                      className={`aspect-square flex flex-col items-center justify-center rounded-xl text-sm font-medium transition-all
-                        ${sel   ? 'bg-sage-500 text-white' :
-                          avail  ? `hover:bg-sage-100 cursor-pointer ${isWeekend ? 'text-sage-500' : 'text-sage-900'}` :
-                                   `cursor-not-allowed ${isWeekend ? 'text-sage-300' : 'text-sage-200'}`}
-                      `}
-                    >
-                      <span>{day}</span>
-                      {avail && !sel && <span className="w-1 h-1 rounded-full bg-sage-400 mt-0.5 block" />}
-                      {!avail && !past && <span className="text-sage-300 text-xs leading-none">-</span>}
-                    </button>
-                  )
-                })}
-              </div>
-
-              <div className="flex items-center gap-6 mt-4 pt-4 border-t border-sage-100 text-xs text-sage-400">
-                <div className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-sage-400 inline-block" /> Disponible</div>
-                <div className="flex items-center gap-1.5"><span className="w-4 h-4 rounded-lg bg-sage-500 inline-block" /> Seleccionado</div>
-                <div className="flex items-center gap-1.5"><span className="text-sage-300 font-bold">-</span> Sin disponibilidad</div>
-              </div>
-            </div>
-
-            {selectedDate && (
-              <div ref={hoursRef} className="bg-white border border-sage-200 rounded-2xl p-6">
-                <h3 className="font-serif text-lg text-sage-900 mb-1">Selecciona un horario</h3>
-                <p className="text-sm font-medium text-sage-500 mb-5">
-                  {selectedDate.toLocaleDateString('es-CL', { weekday:'long', day:'numeric', month:'long' })}
-                </p>
-
-                {normalHours.length === 0 && primeHours.length === 0 ? (
-                  <p className="text-sage-400 text-sm py-4 text-center">No hay horarios disponibles para este día.</p>
-                ) : (
-                  <div className="space-y-6">
-                    {normalHours.length > 0 && (
-                      <div>
-                        <div className="flex items-center gap-2 mb-3">
-                          <span className="w-2 h-2 rounded-full bg-sage-400 inline-block" />
-                          <span className="text-xs font-semibold text-sage-500 uppercase tracking-wide">Horario Normal 08:00 a 20:00</span>
-                        </div>
-                        <div className="flex flex-wrap gap-2">
-                          {normalHours.map(h => (
-                            <button key={h} onClick={() => setSelectedHour(h)}
-                              className={`px-4 py-2 rounded-xl text-sm font-medium border transition-all ${
-                                selectedHour === h
-                                  ? 'bg-sage-500 text-white border-sage-500'
-                                  : 'border-sage-200 text-sage-700 hover:border-sage-400 hover:bg-sage-50'
-                              }`}>
-                              {h}
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-
-                    {primeHours.length > 0 && (
-                      <div>
-                        <div className="flex items-center gap-2 mb-3">
-                          <span className="w-2 h-2 rounded-full inline-block" style={{ backgroundColor: '#c8a96e' }} />
-                          <span className="text-xs font-semibold uppercase tracking-wide" style={{ color: '#c8a96e' }}>Horario Prime desde las 20:00</span>
-                        </div>
-                        <div className="flex flex-wrap gap-2">
-                          {primeHours.map(h => (
-                            <button key={h} onClick={() => setSelectedHour(h)}
-                              className={`px-4 py-2 rounded-xl text-sm font-medium border transition-all ${
-                                selectedHour === h
-                                  ? 'text-white border-transparent'
-                                  : 'border-sage-200 text-sage-700 hover:border-amber-300 hover:bg-amber-50'
-                              }`}
-                              style={selectedHour === h ? { backgroundColor: '#c8a96e', borderColor: '#c8a96e' } : {}}>
-                              {h}
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-                    )}
+      {/* Horarios — columna derecha */}
+      <div className="w-56 flex-shrink-0">
+        {!selectedDate ? (
+          <div className="h-full flex items-center justify-center text-center py-10">
+            <p className="text-sm text-sage-300">← Selecciona<br/>un día</p>
+          </div>
+        ) : (
+          <div ref={hoursRef}>
+            <p className="text-sm font-medium text-sage-700 mb-4">
+              {selectedDate.toLocaleDateString('es-CL', { weekday:'long', day:'numeric', month:'long' })}
+            </p>
+            {normalHours.length === 0 && primeHours.length === 0 ? (
+              <p className="text-sage-400 text-xs">Sin horarios disponibles.</p>
+            ) : (
+              <div className="space-y-4">
+                {normalHours.length > 0 && (
+                  <div>
+                    <div className="flex items-center gap-1.5 mb-2">
+                      <span className="w-1.5 h-1.5 rounded-full bg-sage-400 inline-block" />
+                      <span className="text-xs font-semibold text-sage-500 uppercase tracking-wide">Normal 08:00–20:00</span>
+                    </div>
+                    <div className="flex flex-wrap gap-1.5">
+                      {normalHours.map(h => (
+                        <button key={h} onClick={() => setSelectedHour(h)}
+                          className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-all ${
+                            selectedHour === h ? 'bg-sage-500 text-white border-sage-500' : 'border-sage-200 text-sage-700 hover:border-sage-400 hover:bg-sage-50'
+                          }`}>
+                          {h}
+                        </button>
+                      ))}
+                    </div>
                   </div>
                 )}
-
-                <div className="mt-6 flex justify-end">
-                  <button disabled={!selectedHour} onClick={() => setStep(1)}
-                    className="btn-primary disabled:opacity-40 disabled:cursor-not-allowed">
-                    Continuar →
-                  </button>
-                </div>
+                {primeHours.length > 0 && (
+                  <div>
+                    <div className="flex items-center gap-1.5 mb-2">
+                      <span className="w-1.5 h-1.5 rounded-full inline-block" style={{ backgroundColor: '#c8a96e' }} />
+                      <span className="text-xs font-semibold uppercase tracking-wide" style={{ color: '#c8a96e' }}>Prime desde 20:00</span>
+                    </div>
+                    <div className="flex flex-wrap gap-1.5">
+                      {primeHours.map(h => (
+                        <button key={h} onClick={() => setSelectedHour(h)}
+                          className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-all ${
+                            selectedHour === h ? 'text-white border-transparent' : 'border-sage-200 text-sage-700 hover:border-amber-300 hover:bg-amber-50'
+                          }`}
+                          style={selectedHour === h ? { backgroundColor: '#c8a96e', borderColor: '#c8a96e' } : {}}>
+                          {h}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             )}
+            <div className="mt-6">
+              <button disabled={!selectedHour} onClick={() => setStep(1)}
+                className="btn-primary w-full justify-center text-sm py-2 disabled:opacity-40">
+                Continuar →
+              </button>
+            </div>
           </div>
         )}
+      </div>
+    </div>
+  </div>
+)}
 
         {step === 1 && (
           <div className="bg-white border border-sage-200 rounded-2xl p-6">
