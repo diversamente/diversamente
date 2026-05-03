@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import BookingModal from '@/components/psychologist/BookingModal'
 import { useParams } from 'next/navigation'
 import Link from 'next/link'
 import Navbar from '@/components/layout/Navbar'
@@ -13,6 +14,7 @@ import { ArrowLeft, GraduationCap, MapPin, Globe, CheckCircle, Clock } from 'luc
 export default function PsychProfileClient() {
   const { id } = useParams<{ id: string }>()
   const [psych, setPsych] = useState<Psychologist | null>(null)
+const [showModal, setShowModal] = useState(false)
 
   useEffect(() => {
     const p = getPsychologistById(id)
@@ -64,7 +66,7 @@ export default function PsychProfileClient() {
             <p className="text-sm text-sage-400 mb-1">Desde</p>
             <p className="font-serif text-4xl text-sage-900 font-semibold">$35.000</p>
             <p className="text-xs text-sage-400 mb-4">por sesión · 50 min</p>
-            <Link href="/tarifas" className="btn-primary text-sm">Reservar Sesión</Link>
+            <button onClick={() => setShowModal(true)} className="btn-primary text-sm">Reservar Sesión</button>
           </div>
         </div>
 
@@ -111,14 +113,17 @@ export default function PsychProfileClient() {
             <div className="bg-sage-500 rounded-2xl p-5 text-white text-center">
               <p className="font-serif text-2xl font-semibold mb-1">$35.000</p>
               <p className="text-sage-100 text-xs mb-4">por sesión · Horario Normal</p>
-              <Link href="/tarifas" className="bg-white text-sage-600 hover:bg-sage-50 text-sm font-medium px-5 py-2 rounded-full transition-colors block">
-                Reservar Sesión
-              </Link>
+              <button onClick={() => setShowModal(true)} className="bg-white text-sage-600 hover:bg-sage-50 text-sm font-medium px-5 py-2 rounded-full transition-colors block w-full">
+               Reservar Sesión
+              </button>
             </div>
           </div>
         </div>
       </main>
       <Footer />
+      {showModal && psych && (
+  <BookingModal psych={psych} onClose={() => setShowModal(false)} />
+)}
     </>
   )
 }
