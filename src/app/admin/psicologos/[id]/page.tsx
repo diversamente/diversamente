@@ -26,3 +26,7 @@ export default function EditPsicologoPage() {
     </div>
   )
 }
+
+export function generateStaticParams() {
+  return []
+}
