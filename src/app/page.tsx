@@ -1,3 +1,6 @@
+'use client'
+
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Navbar from '@/components/layout/Navbar'
 import Footer from '@/components/layout/Footer'
@@ -17,8 +20,7 @@ const SPECIALTIES = [
 
 const INSURANCES = ['Banmédica', 'Cruz Blanca', 'Colmena', 'Consalud', 'Vida Tres']
 
-'use client'
-import { useState, useEffect } from 'react'
+
 
 export default function HomePage() {
   const [psychologists, setPsychologists] = useState<any[]>([])
