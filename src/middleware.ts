@@ -6,7 +6,7 @@ const ADMIN_PASS = 'GGF@divermente2023'
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
 
-  // Solo proteger rutas /admin
+  // Solo rutas que empiecen exactamente con /admin
   if (!pathname.startsWith('/admin')) {
     return NextResponse.next()
   }
@@ -14,11 +14,17 @@ export function middleware(request: NextRequest) {
   const authHeader = request.headers.get('authorization')
 
   if (authHeader && authHeader.startsWith('Basic ')) {
-    const base64 = authHeader.split(' ')[1]
-    const decoded = atob(base64)
-    const [user, pass] = decoded.split(':')
-    if (user === ADMIN_USER && pass === ADMIN_PASS) {
-      return NextResponse.next()
+    try {
+      const base64 = authHeader.split(' ')[1]
+      const decoded = atob(base64)
+      const colonIndex = decoded.indexOf(':')
+      const user = decoded.slice(0, colonIndex)
+      const pass = decoded.slice(colonIndex + 1)
+      if (user === ADMIN_USER && pass === ADMIN_PASS) {
+        return NextResponse.next()
+      }
+    } catch {
+      // credenciales inválidas
     }
   }
 
@@ -31,5 +37,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/admin', '/admin/:path*'],
+  matcher: '/admin/:path*',
 }
