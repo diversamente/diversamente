@@ -4,13 +4,16 @@ const ADMIN_USER = 'gabriel.godoy.dv@gmail.com'
 const ADMIN_PASS = 'GGF@divermente2023'
 
 export function middleware(request: NextRequest) {
-  if (!request.nextUrl.pathname.startsWith('/admin')) {
+  const { pathname } = request.nextUrl
+
+  // Solo proteger rutas /admin
+  if (!pathname.startsWith('/admin')) {
     return NextResponse.next()
   }
 
   const authHeader = request.headers.get('authorization')
 
-  if (authHeader) {
+  if (authHeader && authHeader.startsWith('Basic ')) {
     const base64 = authHeader.split(' ')[1]
     const decoded = atob(base64)
     const [user, pass] = decoded.split(':')
@@ -28,5 +31,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: '/admin/:path*',
+  matcher: ['/admin', '/admin/:path*'],
 }
