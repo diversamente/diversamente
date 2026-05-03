@@ -89,11 +89,7 @@ export default function ReservarPage() {
     setPsychologists(getPsychologists().filter(p => p.activo))
   }, [])
 
-  useEffect(() => {
-    if (selectedDate && step === 0) {
-      setTimeout(() => hoursRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100)
-    }
-  }, [selectedDate, step])
+
 
   const getHoursForDate = (date: Date, type: 'normal' | 'prime'): string[] => {
     const dayName = toDayName(date)
