@@ -255,45 +255,40 @@ export default function PsychForm({ initial }: Props) {
         </div>
       </Section>
 
-      {/* Servicios y Precios */}
-      <Section title="Servicios y Precios por Sesión">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="md:col-span-2">
-            <p className="text-xs font-semibold text-sage-500 uppercase tracking-wide mb-3 flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-sage-400 inline-block" /> Horario Normal (08:00–20:00)
-            </p>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-              {servicios.filter(s => s.horario === 'normal').map(s => (
-                <div key={s.id}>
-                  <label className="label">{s.nombre}</label>
-                  <div className="relative">
-                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sage-400 text-sm">$</span>
-                    <input type="number" className="input pl-7" value={s.precio} step={1000}
-                      onChange={e => updateServicioPrecio(s.id, parseInt(e.target.value) || 0)} />
-                  </div>
+
+
+    {/* Horario Prime */}
+    <div>
+      <p className="text-xs font-semibold uppercase tracking-wide mb-3 flex items-center gap-2" style={{ color: '#c8a96e' }}>
+        <span className="w-2 h-2 rounded-full inline-block" style={{ backgroundColor: '#c8a96e' }} /> Horario Prime (20:00–08:00)
+      </p>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+        {[
+          { id: 'adulto-prime',  nombre: 'Adulto',          cat: 'Adulto' },
+          { id: 'infanto-prime', nombre: 'Infanto-Juvenil', cat: 'Infanto-Juvenil' },
+          { id: 'pareja-prime',  nombre: 'Pareja/Familia',  cat: 'Pareja' },
+        ].map(item => {
+          const enabled = categorias.has(item.cat as any) || (item.cat === 'Pareja' && (categorias.has('Pareja') || categorias.has('Familia')))
+          const svc = servicios.find(s => s.id === item.id)
+          return (
+            <div key={item.id} className={`border rounded-xl p-3 transition-all ${enabled ? 'border-sage-200 bg-white' : 'border-sage-100 bg-sage-50 opacity-50'}`}>
+              <label className="label mb-2">{item.nombre}</label>
+              {enabled ? (
+                <div className="relative">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sage-400 text-sm">$</span>
+                  <input type="number" className="input pl-7" value={svc?.precio || 0} step={1000}
+                    onChange={e => updateServicioPrecio(item.id, parseInt(e.target.value) || 0)} />
                 </div>
-              ))}
+              ) : (
+                <div className="input bg-sage-100 text-sage-300 text-sm">Servicio no habilitado</div>
+              )}
             </div>
-          </div>
-          <div className="md:col-span-2 mt-2">
-            <p className="text-xs font-semibold uppercase tracking-wide mb-3 flex items-center gap-2" style={{ color: '#c8a96e' }}>
-              <span className="w-2 h-2 rounded-full inline-block" style={{ backgroundColor: '#c8a96e' }} /> Horario Prime (20:00–08:00)
-            </p>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-              {servicios.filter(s => s.horario === 'prime').map(s => (
-                <div key={s.id}>
-                  <label className="label">{s.nombre}</label>
-                  <div className="relative">
-                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sage-400 text-sm">$</span>
-                    <input type="number" className="input pl-7" value={s.precio} step={1000}
-                      onChange={e => updateServicioPrecio(s.id, parseInt(e.target.value) || 0)} />
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </Section>
+          )
+        })}
+      </div>
+    </div>
+  </div>
+</Section>
 
       {/* Enfoque */}
       <Section title="Enfoque Terapéutico (selección única) *">
@@ -318,6 +313,41 @@ export default function PsychForm({ initial }: Props) {
           ))}
         </div>
       </Section>
+
+      {/* Servicios y Precios */}
+ <Section title="Servicios y Precios por Sesión">
+  <p className="text-xs text-sage-400 mb-4">Los precios se habilitan según las categorías seleccionadas arriba.</p>
+  <div className="space-y-4">
+    {/* Horario Normal */}
+    <div>
+      <p className="text-xs font-semibold text-sage-500 uppercase tracking-wide mb-3 flex items-center gap-2">
+        <span className="w-2 h-2 rounded-full bg-sage-400 inline-block" /> Horario Normal (08:00–20:00)
+      </p>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+        {[
+          { id: 'adulto-normal',  nombre: 'Adulto',           cat: 'Adulto' },
+          { id: 'infanto-normal', nombre: 'Infanto-Juvenil',  cat: 'Infanto-Juvenil' },
+          { id: 'pareja-normal',  nombre: 'Pareja/Familia',   cat: 'Pareja' },
+        ].map(item => {
+          const enabled = categorias.has(item.cat as any) || (item.cat === 'Pareja' && (categorias.has('Pareja') || categorias.has('Familia')))
+          const svc = servicios.find(s => s.id === item.id)
+          return (
+            <div key={item.id} className={`border rounded-xl p-3 transition-all ${enabled ? 'border-sage-200 bg-white' : 'border-sage-100 bg-sage-50 opacity-50'}`}>
+              <label className="label mb-2">{item.nombre}</label>
+              {enabled ? (
+                <div className="relative">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sage-400 text-sm">$</span>
+                  <input type="number" className="input pl-7" value={svc?.precio || 0} step={1000}
+                    onChange={e => updateServicioPrecio(item.id, parseInt(e.target.value) || 0)} />
+                </div>
+              ) : (
+                <div className="input bg-sage-100 text-sage-300 text-sm">Servicio no habilitado</div>
+              )}
+            </div>
+          )
+        })}
+      </div>
+    </div>
 
       {/* Especialidades */}
       <Section title="Especialidades (selección múltiple)">
