@@ -18,9 +18,7 @@ function emptySchedule(): WeekSchedule {
   return { lunes: [], martes: [], miercoles: [], jueves: [], viernes: [], sabado: [], domingo: [] }
 }
 
-interface Props {
-  initial?: Psychologist
-}
+interface Props { initial?: Psychologist }
 
 export default function PsychForm({ initial }: Props) {
   const router = useRouter()
@@ -28,7 +26,7 @@ export default function PsychForm({ initial }: Props) {
   const [nombre,      setNombre]      = useState(initial?.nombre      || '')
   const [universidad, setUniversidad] = useState(initial?.universidad || '')
   const [rut,         setRut]         = useState(initial?.rut         || '')
-  const [registroSIS, setRegistroSIS] = useState(initial?.registroSIS || '')
+  const [registroSIS, setRegistroSIS] = useState((initial as any)?.registroSIS || '')
   const [fechaNac,    setFechaNac]    = useState(initial?.fechaNacimiento || '')
   const [nac,         setNac]         = useState(initial?.nacionalidad || 'Chilena')
   const [tel,         setTel]         = useState(initial?.telefono    || '')
@@ -47,17 +45,12 @@ export default function PsychForm({ initial }: Props) {
   const [normalSched, setNormalSched] = useState<WeekSchedule>(initial?.horarioNormal || emptySchedule())
   const [primeSched,  setPrimeSched]  = useState<WeekSchedule>(initial?.horarioPrime  || emptySchedule())
 
-  // Servicios con precios
   const [servicios, setServicios] = useState<ServicioPrecio[]>(
-    initial?.servicios || SERVICIOS_BASE.map(s => ({ ...s, precio: s.horario === 'normal' ? 35000 : 45000 }))
+    (initial as any)?.servicios || SERVICIOS_BASE.map(s => ({ ...s, precio: s.horario === 'normal' ? 35000 : 45000 }))
   )
 
-  // Servicios por celda de horario: key = "day-hour", value = array of service ids
-  const [cellServices, setCellServices] = useState<Record<string, string[]>>(
-    (initial as any)?.cellServices || {}
-  )
-  const [activeCellMenu, setActiveCellMenu] = useState<string | null>(null)
-
+  const [cellServices,    setCellServices]    = useState<Record<string, string[]>>((initial as any)?.cellServices || {})
+  const [activeCellMenu,  setActiveCellMenu]  = useState<string | null>(null)
   const [saving, setSaving] = useState(false)
   const [error,  setError]  = useState('')
 
@@ -68,10 +61,7 @@ export default function PsychForm({ initial }: Props) {
     const set = new Set(especialidades); set.has(s) ? set.delete(s) : set.add(s); setEspecialidades(set)
   }
 
-  const toggleCell = (
-    sched: WeekSchedule, setSched: (w: WeekSchedule) => void,
-    day: string, hour: string
-  ) => {
+  const toggleCell = (sched: WeekSchedule, setSched: (w: WeekSchedule) => void, day: string, hour: string) => {
     const arr  = sched[day as keyof WeekSchedule] || []
     const next = arr.includes(hour) ? arr.filter(h => h !== hour) : [...arr, hour]
     setSched({ ...sched, [day]: next })
@@ -83,7 +73,7 @@ export default function PsychForm({ initial }: Props) {
   }
 
   const toggleCellService = (day: string, hour: string, serviceId: string) => {
-    const key = `${day}-${hour}`
+    const key  = `${day}-${hour}`
     const curr = cellServices[key] || []
     const next = curr.includes(serviceId) ? curr.filter(id => id !== serviceId) : [...curr, serviceId]
     setCellServices({ ...cellServices, [key]: next })
@@ -107,33 +97,27 @@ export default function PsychForm({ initial }: Props) {
 
   const handleSubmit = () => {
     setError('')
-    if (!nombre.trim())      { setError('El nombre es obligatorio.');       return }
-    if (!universidad.trim()) { setError('La universidad es obligatoria.');  return }
-    if (!enfoque)            { setError('Selecciona un enfoque terapéutico.'); return }
+    if (!nombre.trim())        { setError('El nombre es obligatorio.');          return }
+    if (!universidad.trim())   { setError('La universidad es obligatoria.');     return }
+    if (!enfoque)              { setError('Selecciona un enfoque terapéutico.'); return }
     if (categorias.size === 0) { setError('Selecciona al menos una categoría.'); return }
-
     setSaving(true)
     const psych: any = {
-      id:              initial?.id || generateId(),
+      id: initial?.id || generateId(),
       nombre, universidad, rut, registroSIS,
-      fechaNacimiento: fechaNac,
-      nacionalidad:    nac,
-      telefono:        tel,
-      direccion:       dir,
-      estadoCivil:     civil,
-      correo,
-      descripcion:     desc,
-      enfoque:         enfoque as Approach,
-      categorias:      [...categorias],
-      especialidades:  [...especialidades],
-      posgrados:       posgrados.filter(p => p.institucion || p.titulo),
-      experiencia:     experiencia.filter(e => e.institucion || e.funciones),
-      horarioNormal:   normalSched,
-      horarioPrime:    primeSched,
-      servicios,
-      cellServices,
-      activo:          initial?.activo ?? true,
-      createdAt:       initial?.createdAt || new Date().toISOString().slice(0, 10),
+      fechaNacimiento: fechaNac, nacionalidad: nac,
+      telefono: tel, direccion: dir, estadoCivil: civil, correo,
+      descripcion: desc,
+      enfoque: enfoque as Approach,
+      categorias: [...categorias],
+      especialidades: [...especialidades],
+      posgrados:   posgrados.filter(p => p.institucion || p.titulo),
+      experiencia: experiencia.filter(e => e.institucion || e.funciones),
+      horarioNormal: normalSched,
+      horarioPrime:  primeSched,
+      servicios, cellServices,
+      activo:    initial?.activo ?? true,
+      createdAt: initial?.createdAt || new Date().toISOString().slice(0, 10),
     }
     savePsychologist(psych)
     setSaving(false)
@@ -147,9 +131,7 @@ export default function PsychForm({ initial }: Props) {
     </div>
   )
 
-  const ScheduleTable = ({
-    hours, sched, setSched, type
-  }: {
+  const ScheduleTable = ({ hours, sched, setSched, type }: {
     hours: string[]; sched: WeekSchedule; setSched: (w: WeekSchedule) => void; type: 'normal' | 'prime'
   }) => {
     const relevantServices = servicios.filter(s => s.horario === type)
@@ -177,23 +159,18 @@ export default function PsychForm({ initial }: Props) {
                   const selectedSvcs = cellServices[key] || []
                   return (
                     <td key={d} className="p-0.5 relative">
-                      <button
-                        type="button"
+                      <button type="button"
                         onClick={() => {
                           toggleCell(sched, setSched, d, h)
                           if (!active) setActiveCellMenu(key)
                           else setActiveCellMenu(null)
                         }}
-                        className={`w-full h-6 rounded transition-colors border ${
-                          active ? 'bg-sage-500 border-sage-600' : 'bg-white border-sage-200 hover:bg-sage-100'
-                        }`}
+                        className={`w-full h-6 rounded transition-colors border ${active ? 'bg-sage-500 border-sage-600' : 'bg-white border-sage-200 hover:bg-sage-100'}`}
                       />
                       {active && (
-                        <button
-                          type="button"
+                        <button type="button"
                           onClick={() => setActiveCellMenu(isOpen ? null : key)}
-                          className="absolute -top-1 -right-1 w-4 h-4 bg-amber-400 rounded-full text-white flex items-center justify-center z-10 text-xs font-bold leading-none"
-                          title="Seleccionar servicios"
+                          className="absolute -top-1 -right-1 w-4 h-4 bg-amber-400 rounded-full text-white flex items-center justify-center z-10 text-xs font-bold"
                         >
                           {selectedSvcs.length > 0 ? selectedSvcs.length : '+'}
                         </button>
@@ -203,21 +180,11 @@ export default function PsychForm({ initial }: Props) {
                           <p className="text-xs font-medium text-sage-500 mb-2">Servicios en {DAY_LABELS[d]} {h}</p>
                           {relevantServices.map(svc => (
                             <label key={svc.id} className="flex items-center gap-2 py-1 cursor-pointer hover:bg-sage-50 rounded px-1">
-                              <input
-                                type="checkbox"
-                                checked={selectedSvcs.includes(svc.id)}
-                                onChange={() => toggleCellService(d, h, svc.id)}
-                                className="accent-sage-500"
-                              />
+                              <input type="checkbox" checked={selectedSvcs.includes(svc.id)} onChange={() => toggleCellService(d, h, svc.id)} className="accent-sage-500" />
                               <span className="text-xs text-sage-700">{svc.nombre}</span>
                             </label>
                           ))}
-                          <button
-                            onClick={() => setActiveCellMenu(null)}
-                            className="mt-2 text-xs text-sage-400 hover:text-sage-600 w-full text-right"
-                          >
-                            Cerrar ✕
-                          </button>
+                          <button onClick={() => setActiveCellMenu(null)} className="mt-2 text-xs text-sage-400 hover:text-sage-600 w-full text-right">Cerrar ✕</button>
                         </div>
                       )}
                     </td>
@@ -230,6 +197,20 @@ export default function PsychForm({ initial }: Props) {
       </div>
     )
   }
+
+  const PRECIO_ITEMS = [
+    { id: 'adulto-normal',  nombre: 'Adulto',          cat: 'Adulto',           horario: 'normal' as const },
+    { id: 'infanto-normal', nombre: 'Infanto-Juvenil', cat: 'Infanto-Juvenil',  horario: 'normal' as const },
+    { id: 'pareja-normal',  nombre: 'Pareja/Familia',  cat: 'Pareja',           horario: 'normal' as const },
+    { id: 'adulto-prime',   nombre: 'Adulto',          cat: 'Adulto',           horario: 'prime'  as const },
+    { id: 'infanto-prime',  nombre: 'Infanto-Juvenil', cat: 'Infanto-Juvenil',  horario: 'prime'  as const },
+    { id: 'pareja-prime',   nombre: 'Pareja/Familia',  cat: 'Pareja',           horario: 'prime'  as const },
+  ]
+
+  const isEnabled = (cat: string) =>
+    categorias.has(cat as Category) ||
+    (cat === 'Pareja' && (categorias.has('Pareja') || categorias.has('Familia'))) ||
+    (cat === 'Infanto-Juvenil' && categorias.has('Infanto-Juvenil'))
 
   return (
     <div>
@@ -254,41 +235,6 @@ export default function PsychForm({ initial }: Props) {
           <div className="md:col-span-2"><label className="label">Descripción / Presentación *</label><textarea className="input min-h-[90px] resize-y" value={desc} onChange={e => setDesc(e.target.value)} placeholder="Descripción profesional..." /></div>
         </div>
       </Section>
-
-
-
-    {/* Horario Prime */}
-    <div>
-      <p className="text-xs font-semibold uppercase tracking-wide mb-3 flex items-center gap-2" style={{ color: '#c8a96e' }}>
-        <span className="w-2 h-2 rounded-full inline-block" style={{ backgroundColor: '#c8a96e' }} /> Horario Prime (20:00–08:00)
-      </p>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-        {[
-          { id: 'adulto-prime',  nombre: 'Adulto',          cat: 'Adulto' },
-          { id: 'infanto-prime', nombre: 'Infanto-Juvenil', cat: 'Infanto-Juvenil' },
-          { id: 'pareja-prime',  nombre: 'Pareja/Familia',  cat: 'Pareja' },
-        ].map(item => {
-          const enabled = categorias.has(item.cat as any) || (item.cat === 'Pareja' && (categorias.has('Pareja') || categorias.has('Familia')))
-          const svc = servicios.find(s => s.id === item.id)
-          return (
-            <div key={item.id} className={`border rounded-xl p-3 transition-all ${enabled ? 'border-sage-200 bg-white' : 'border-sage-100 bg-sage-50 opacity-50'}`}>
-              <label className="label mb-2">{item.nombre}</label>
-              {enabled ? (
-                <div className="relative">
-                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sage-400 text-sm">$</span>
-                  <input type="number" className="input pl-7" value={svc?.precio || 0} step={1000}
-                    onChange={e => updateServicioPrecio(item.id, parseInt(e.target.value) || 0)} />
-                </div>
-              ) : (
-                <div className="input bg-sage-100 text-sage-300 text-sm">Servicio no habilitado</div>
-              )}
-            </div>
-          )
-        })}
-      </div>
-    </div>
-  </div>
-</Section>
 
       {/* Enfoque */}
       <Section title="Enfoque Terapéutico (selección única) *">
@@ -315,39 +261,61 @@ export default function PsychForm({ initial }: Props) {
       </Section>
 
       {/* Servicios y Precios */}
- <Section title="Servicios y Precios por Sesión">
-  <p className="text-xs text-sage-400 mb-4">Los precios se habilitan según las categorías seleccionadas arriba.</p>
-  <div className="space-y-4">
-    {/* Horario Normal */}
-    <div>
-      <p className="text-xs font-semibold text-sage-500 uppercase tracking-wide mb-3 flex items-center gap-2">
-        <span className="w-2 h-2 rounded-full bg-sage-400 inline-block" /> Horario Normal (08:00–20:00)
-      </p>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-        {[
-          { id: 'adulto-normal',  nombre: 'Adulto',           cat: 'Adulto' },
-          { id: 'infanto-normal', nombre: 'Infanto-Juvenil',  cat: 'Infanto-Juvenil' },
-          { id: 'pareja-normal',  nombre: 'Pareja/Familia',   cat: 'Pareja' },
-        ].map(item => {
-          const enabled = categorias.has(item.cat as any) || (item.cat === 'Pareja' && (categorias.has('Pareja') || categorias.has('Familia')))
-          const svc = servicios.find(s => s.id === item.id)
-          return (
-            <div key={item.id} className={`border rounded-xl p-3 transition-all ${enabled ? 'border-sage-200 bg-white' : 'border-sage-100 bg-sage-50 opacity-50'}`}>
-              <label className="label mb-2">{item.nombre}</label>
-              {enabled ? (
-                <div className="relative">
-                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sage-400 text-sm">$</span>
-                  <input type="number" className="input pl-7" value={svc?.precio || 0} step={1000}
-                    onChange={e => updateServicioPrecio(item.id, parseInt(e.target.value) || 0)} />
-                </div>
-              ) : (
-                <div className="input bg-sage-100 text-sage-300 text-sm">Servicio no habilitado</div>
-              )}
+      <Section title="Servicios y Precios por Sesión">
+        <p className="text-xs text-sage-400 mb-4">Los precios se habilitan según las categorías seleccionadas arriba.</p>
+        <div className="space-y-5">
+          <div>
+            <p className="text-xs font-semibold text-sage-500 uppercase tracking-wide mb-3 flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-sage-400 inline-block" /> Horario Normal (08:00–20:00)
+            </p>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+              {PRECIO_ITEMS.filter(i => i.horario === 'normal').map(item => {
+                const enabled = isEnabled(item.cat)
+                const svc = servicios.find(s => s.id === item.id)
+                return (
+                  <div key={item.id} className={`border rounded-xl p-3 transition-all ${enabled ? 'border-sage-200 bg-white' : 'border-sage-100 bg-sage-50 opacity-50'}`}>
+                    <label className="label mb-2">{item.nombre}</label>
+                    {enabled ? (
+                      <div className="relative">
+                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sage-400 text-sm">$</span>
+                        <input type="number" className="input pl-7" value={svc?.precio || 0} step={1000}
+                          onChange={e => updateServicioPrecio(item.id, parseInt(e.target.value) || 0)} />
+                      </div>
+                    ) : (
+                      <div className="input bg-sage-100 text-sage-300 text-sm cursor-not-allowed">Servicio no habilitado</div>
+                    )}
+                  </div>
+                )
+              })}
             </div>
-          )
-        })}
-      </div>
-    </div>
+          </div>
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-wide mb-3 flex items-center gap-2" style={{ color: '#c8a96e' }}>
+              <span className="w-2 h-2 rounded-full inline-block" style={{ backgroundColor: '#c8a96e' }} /> Horario Prime (20:00–08:00)
+            </p>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+              {PRECIO_ITEMS.filter(i => i.horario === 'prime').map(item => {
+                const enabled = isEnabled(item.cat)
+                const svc = servicios.find(s => s.id === item.id)
+                return (
+                  <div key={item.id} className={`border rounded-xl p-3 transition-all ${enabled ? 'border-sage-200 bg-white' : 'border-sage-100 bg-sage-50 opacity-50'}`}>
+                    <label className="label mb-2">{item.nombre}</label>
+                    {enabled ? (
+                      <div className="relative">
+                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sage-400 text-sm">$</span>
+                        <input type="number" className="input pl-7" value={svc?.precio || 0} step={1000}
+                          onChange={e => updateServicioPrecio(item.id, parseInt(e.target.value) || 0)} />
+                      </div>
+                    ) : (
+                      <div className="input bg-sage-100 text-sage-300 text-sm cursor-not-allowed">Servicio no habilitado</div>
+                    )}
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+        </div>
+      </Section>
 
       {/* Especialidades */}
       <Section title="Especialidades (selección múltiple)">
@@ -403,19 +371,17 @@ export default function PsychForm({ initial }: Props) {
 
       {/* Horario Normal */}
       <Section title="Agenda — Horario Normal (08:00–20:00)">
-        <p className="text-xs text-sage-400 mb-1">Haz clic para marcar disponibilidad. Luego haz clic en el botón <span className="bg-amber-400 text-white px-1 rounded">+</span> para asignar servicios a cada bloque.</p>
+        <p className="text-xs text-sage-400 mb-2">Haz clic para marcar disponibilidad. Luego haz clic en <span className="bg-amber-400 text-white px-1 rounded text-xs">+</span> para asignar servicios a cada bloque.</p>
         <ScheduleTable hours={HORARIO_NORMAL} sched={normalSched} setSched={setNormalSched} type="normal" />
       </Section>
 
       {/* Horario Prime */}
       <Section title="Agenda — Horario Prime (20:00–08:00)">
-        <p className="text-xs text-sage-400 mb-1">Haz clic para marcar disponibilidad. Luego haz clic en el botón <span className="bg-amber-400 text-white px-1 rounded">+</span> para asignar servicios a cada bloque.</p>
+        <p className="text-xs text-sage-400 mb-2">Haz clic para marcar disponibilidad. Luego haz clic en <span className="bg-amber-400 text-white px-1 rounded text-xs">+</span> para asignar servicios a cada bloque.</p>
         <ScheduleTable hours={HORARIO_PRIME} sched={primeSched} setSched={setPrimeSched} type="prime" />
       </Section>
 
-      {error && (
-        <div className="bg-red-50 border border-red-200 text-red-600 text-sm rounded-xl px-4 py-3 mb-4">{error}</div>
-      )}
+      {error && <div className="bg-red-50 border border-red-200 text-red-600 text-sm rounded-xl px-4 py-3 mb-4">{error}</div>}
 
       <div className="flex items-center justify-end gap-3 mt-2">
         <button onClick={() => router.push('/admin/psicologos')} className="btn-ghost text-sm border border-sage-200 px-5 py-2.5">Cancelar</button>
