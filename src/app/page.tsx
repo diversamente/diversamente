@@ -6,6 +6,7 @@ import Navbar from '@/components/layout/Navbar'
 import Footer from '@/components/layout/Footer'
 import PsychCard from '@/components/psychologist/PsychCard'
 import { AVATAR_COLORS, getInitials, getAvatarColor } from '@/lib/data'
+import BookingModal from '@/components/psychologist/BookingModal'
 
 const SPECIALTIES = [
   { icon: '🧠', name: 'Ansiedad',       filter: 'Ansiedad' },
@@ -20,7 +21,61 @@ const SPECIALTIES = [
 
 const INSURANCES = ['Banmédica', 'Cruz Blanca', 'Colmena', 'Consalud', 'Vida Tres']
 
+function HeroCard({ psych, color, initials }: { psych: any; color: string; initials: string }) {
+  const [hovered, setHovered] = useState(false)
+  const [showModal, setShowModal] = useState(false)
 
+  return (
+    <>
+      <div
+        onMouseEnter={() => setHovered(true)}
+        onMouseLeave={() => setHovered(false)}
+        className={`bg-white border rounded-2xl transition-all duration-300 cursor-pointer overflow-hidden
+          ${hovered ? 'border-sage-400 shadow-lg row-span-2 z-10' : 'border-sage-200 p-4 text-center'}`}
+        style={hovered ? { padding: '1rem', gridRow: 'span 2' } : {}}
+      >
+        {!hovered ? (
+          <>
+            <div className="w-14 h-14 rounded-full mx-auto mb-2 flex items-center justify-center text-white font-serif text-xl font-semibold"
+              style={{ backgroundColor: color }}>
+              {initials}
+            </div>
+            <p className="text-xs font-medium text-sage-900">{psych.nombre.split(' ')[0]}</p>
+            <p className="text-xs text-sage-400">{psych.categorias[0]}</p>
+          </>
+        ) : (
+          <div className="text-center">
+            <div className="w-16 h-16 rounded-full mx-auto mb-2 flex items-center justify-center text-white font-serif text-2xl font-semibold border-2 border-white shadow"
+              style={{ backgroundColor: color }}>
+              {initials}
+            </div>
+            <p className="text-sm font-semibold text-sage-900 mb-0.5">{psych.nombre}</p>
+            <p className="text-xs text-sage-500 mb-2">{psych.enfoque.replace('Terapia con enfoque ','').replace('Enfoque ','')}</p>
+            <div className="flex flex-wrap gap-1 justify-center mb-2">
+              {psych.categorias.map((c: string) => <span key={c} className="badge-cat text-xs">{c}</span>)}
+            </div>
+            <div className="flex flex-wrap gap-1 justify-center mb-3">
+              {psych.especialidades.slice(0, 2).map((s: string) => <span key={s} className="badge text-xs">{s}</span>)}
+            </div>
+            <div className="flex gap-2 justify-center">
+              <button onClick={() => setShowModal(true)}
+                className="bg-sage-500 hover:bg-sage-600 text-white text-xs font-medium px-3 py-1.5 rounded-full transition-colors">
+                Agendar
+              </button>
+              <a href={`/psicologos/${psych.id}`}
+                className="border border-sage-300 text-sage-600 hover:bg-sage-50 text-xs font-medium px-3 py-1.5 rounded-full transition-colors">
+                Ver perfil
+              </a>
+            </div>
+          </div>
+        )}
+      </div>
+      {showModal && (
+        <BookingModal psych={psych} onClose={() => setShowModal(false)} />
+      )}
+    </>
+  )
+}
 
 export default function HomePage() {
   const [psychologists, setPsychologists] = useState<any[]>([])
@@ -74,20 +129,14 @@ export default function HomePage() {
           </div>
 
           {/* Mini cards */}
-          <div className="grid grid-cols-2 gap-3">
-            {psychologists.slice(0, 4).map((p, i) => (
-              <div key={p.id} className="bg-white border border-sage-200 rounded-2xl p-4 text-center">
-                <div
-                  className="w-14 h-14 rounded-full mx-auto mb-2 flex items-center justify-center
-                             text-white font-serif text-xl font-semibold"
-                  style={{ backgroundColor: AVATAR_COLORS[i % AVATAR_COLORS.length] }}
-                >
-                  {getInitials(p.nombre)}
-                </div>
-                <p className="text-xs font-medium text-sage-900">{p.nombre.split(' ')[0]}</p>
-                <p className="text-xs text-sage-400">{p.categorias[0]}</p>
-              </div>
-            ))}
+          <div className="grid grid-cols-3 gap-3">
+            {psychologists.slice(0, 6).map((p, i) => {
+              const color    = getAvatarColor(p)
+              const initials = getInitials(p.nombre)
+              return (
+                 <HeroCard key={p.id} psych={p} color={AVATAR_COLORS[i % AVATAR_COLORS.length]} initials={initials} />
+              )
+            })}
           </div>
         </div>
       </section>
@@ -123,7 +172,7 @@ export default function HomePage() {
           <h2 className="font-serif text-4xl text-sage-900 mt-2 mb-2">Psicólogos Destacados</h2>
           <p className="text-sage-400 mb-8">Conoce a algunos de nuestros profesionales</p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {featured.map(p => <PsychCard key={p.id} psych={p} />)}
+          {psychologists.slice(0, 6).map(p => <PsychCard key={p.id} psych={p} />)}
           </div>
           <div className="text-center mt-8">
             <Link href="/psicologos" className="btn-primary">
