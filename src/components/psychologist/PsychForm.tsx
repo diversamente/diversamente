@@ -134,7 +134,10 @@ export default function PsychForm({ initial }: Props) {
   const ScheduleTable = ({ hours, sched, setSched, type }: {
     hours: string[]; sched: WeekSchedule; setSched: (w: WeekSchedule) => void; type: 'normal' | 'prime'
   }) => {
-    const relevantServices = servicios.filter(s => s.horario === type)
+    const relevantServices = servicios.filter(s => s.horario === type && isEnabled(
+  s.id.includes('adulto') ? 'Adulto' :
+  s.id.includes('infanto') ? 'Infanto-Juvenil' : 'Pareja/Familia'
+))
     return (
       <div className="overflow-x-auto">
         <table className="text-xs border-collapse" style={{ minWidth: 560 }}>
@@ -277,7 +280,7 @@ const isEnabled = (cat: string) =>
                       <div className="relative">
                         <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sage-400 text-sm">$</span>
                         <input type="number" className="input pl-7" value={svc?.precio || 0} step={1000}
-                          onChange={e => updateServicioPrecio(item.id, parseInt(e.target.value) || 0)} />
+                          onChange={e => { e.preventDefault(); updateServicioPrecio(item.id, parseInt(e.target.value) || 0) }}
                       </div>
                     ) : (
                       <div className="input bg-sage-100 text-sage-300 text-sm cursor-not-allowed">Servicio no habilitado</div>
