@@ -201,10 +201,10 @@ export default function PsychForm({ initial }: Props) {
   const PRECIO_ITEMS = [
     { id: 'adulto-normal',  nombre: 'Adulto',          cat: 'Adulto',           horario: 'normal' as const },
     { id: 'infanto-normal', nombre: 'Infanto-Juvenil', cat: 'Infanto-Juvenil',  horario: 'normal' as const },
-    { id: 'pareja-normal',  nombre: 'Pareja/Familia',  cat: 'Pareja',           horario: 'normal' as const },
+    { id: 'pareja-normal',  nombre: 'Pareja/Familia',  cat: 'Pareja/Familia',   horario: 'normal' as const },
     { id: 'adulto-prime',   nombre: 'Adulto',          cat: 'Adulto',           horario: 'prime'  as const },
     { id: 'infanto-prime',  nombre: 'Infanto-Juvenil', cat: 'Infanto-Juvenil',  horario: 'prime'  as const },
-    { id: 'pareja-prime',   nombre: 'Pareja/Familia',  cat: 'Pareja',           horario: 'prime'  as const },
+   { id: 'pareja-prime',   nombre: 'Pareja/Familia',  cat: 'Pareja/Familia',   horario: 'prime'  as const },
   ]
 
 const isEnabled = (cat: string) =>
