@@ -80,6 +80,38 @@ export type WeekSchedule = {
   [day in 'lunes' | 'martes' | 'miercoles' | 'jueves' | 'viernes' | 'sabado' | 'domingo']: string[]
 }
 
+export interface ServicioPrecio {
+  id: string
+  nombre: string
+  precio: number
+  horario: 'normal' | 'prime'
+}
+
+export const SERVICIOS_BASE = [
+  { id: 'adulto-normal',   nombre: 'Psicología Adultos',       horario: 'normal' as const },
+  { id: 'infanto-normal',  nombre: 'Psicología Infanto-Juvenil', horario: 'normal' as const },
+  { id: 'pareja-normal',   nombre: 'Pareja/Familia',           horario: 'normal' as const },
+  { id: 'adulto-prime',    nombre: 'Psicología Adultos',       horario: 'prime'  as const },
+  { id: 'infanto-prime',   nombre: 'Psicología Infanto-Juvenil', horario: 'prime' as const },
+  { id: 'pareja-prime',    nombre: 'Pareja/Familia',           horario: 'prime'  as const },
+]
+
+export interface ServicioPrecio {
+  id: string
+  nombre: string
+  precio: number
+  horario: 'normal' | 'prime'
+}
+
+export const SERVICIOS_BASE = [
+  { id: 'adulto-normal',  nombre: 'Psicología Adultos',        horario: 'normal' as const },
+  { id: 'infanto-normal', nombre: 'Psicología Infanto-Juvenil', horario: 'normal' as const },
+  { id: 'pareja-normal',  nombre: 'Pareja/Familia',            horario: 'normal' as const },
+  { id: 'adulto-prime',   nombre: 'Psicología Adultos',        horario: 'prime'  as const },
+  { id: 'infanto-prime',  nombre: 'Psicología Infanto-Juvenil', horario: 'prime' as const },
+  { id: 'pareja-prime',   nombre: 'Pareja/Familia',            horario: 'prime'  as const },
+]
+
 export interface Psychologist {
   id: string
   nombre: string
@@ -91,6 +123,8 @@ export interface Psychologist {
   direccion?: string
   estadoCivil?: string
   correo?: string
+  registroSIS?: string
+  servicios?: ServicioPrecio[]
   descripcion: string
   foto?: string
   enfoque: Approach
