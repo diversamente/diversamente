@@ -27,7 +27,7 @@ export const ENFOQUES: Approach[] = [
 export const CATEGORIAS: Category[] = [
   'Adulto',
   'Infanto-Juvenil',
-  'Pareja',
+  'Pareja/Familia',
 ]
 // ─── Especialidades ───────────────────────────────────────────────────────────
 export const ESPECIALIDADES: Specialty[] = [
@@ -104,7 +104,7 @@ export const SAMPLE_PSYCHOLOGISTS: Psychologist[] = [
     correo: 'dominique@diversamente.cl',
     descripcion: 'Psicóloga clínica con 8 años de experiencia, especializada en terapia cognitivo-conductual para adultos y parejas. Mi enfoque está centrado en el bienestar emocional y el desarrollo personal.',
     enfoque: 'Terapia con enfoque cognitivo conductual',
-    categorias: ['Adulto', 'Pareja'],
+    categorias: ['Adulto', 'Pareja/Familia'],
     especialidades: ['Ansiedad', 'Depresión', 'Autoestima', 'Dependencia emocional'],
     posgrados: [{ desde: '2019-03', hasta: '2020-12', institucion: 'U. de Chile', titulo: 'Magíster en Psicología Clínica' }],
     experiencia: [{ desde: '2020-01', hasta: '', institucion: 'DiversaMente', funciones: 'Psicóloga clínica online' }],
@@ -233,7 +233,7 @@ export const SAMPLE_BLOG_POSTS: BlogPost[] = [
     titulo: 'Comunicación saludable en la pareja',
     resumen: 'Aprende herramientas concretas para fortalecer el vínculo y mejorar la comunicación con tu pareja.',
     contenido: 'Contenido completo del artículo...',
-    categoria: 'Pareja',
+    categoria: 'Pareja/Familia',
     autor: 'Maribel Arenas',
     fecha: '2025-04-22',
   },
@@ -264,7 +264,7 @@ export const PRICES: PriceItem[] = [
   { id: 'sn-adulto',     nombre: 'Sesión Normal · Adulto',          descripcion: 'Lunes a Viernes 08:00–20:00', precio: 35000, tipo: 'sesion' },
   { id: 'sn-infanto',    nombre: 'Sesión Normal · Infanto-Juvenil', descripcion: 'Lunes a Viernes 08:00–20:00', precio: 40000, tipo: 'sesion', destacado: true },
   { id: 'sp-adulto',     nombre: 'Sesión Prime · Adulto',           descripcion: 'Horario extendido 20:00–08:00', precio: 45000, tipo: 'sesion' },
-  { id: 'sp-pareja',     nombre: 'Sesión Pareja',                   descripcion: 'Todos los horarios disponibles', precio: 50000, tipo: 'sesion' },
+  { id: 'sp-Pareja/Familia',     nombre: 'Sesión Pareja/Familia',   descripcion: 'Todos los horarios disponibles', precio: 50000, tipo: 'sesion' },
   { id: 'pack-inicio',   nombre: 'Pack Inicio',                     descripcion: '3 sesiones · Validez 2 meses',  precio: 95000,  tipo: 'pack', sesiones: 3,  validezMeses: 2 },
   { id: 'pack-proceso',  nombre: 'Pack Proceso',                    descripcion: '6 sesiones · Validez 4 meses',  precio: 180000, tipo: 'pack', sesiones: 6,  validezMeses: 4, destacado: true },
   { id: 'pack-trans',    nombre: 'Pack Transformación',             descripcion: '12 sesiones · Validez 6 meses', precio: 320000, tipo: 'pack', sesiones: 12, validezMeses: 6 },
