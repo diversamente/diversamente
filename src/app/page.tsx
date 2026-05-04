@@ -130,13 +130,9 @@ export default function HomePage() {
 
           {/* Mini cards */}
           <div className="grid grid-cols-3 gap-3">
-            {psychologists.slice(0, 6).map((p, i) => {
-              const color    = getAvatarColor(p)
-              const initials = getInitials(p.nombre)
-              return (
-                 <HeroCard key={p.id} psych={p} color={AVATAR_COLORS[i % AVATAR_COLORS.length]} initials={initials} />
-              )
-            })}
+            {psychologists.slice(0, 6).map((p, i) => (
+              <HeroCard key={p.id} psych={p} color={AVATAR_COLORS[i % AVATAR_COLORS.length]} initials={getInitials(p.nombre)} />
+            ))}
           </div>
         </div>
       </section>
