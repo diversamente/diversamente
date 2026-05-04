@@ -208,9 +208,7 @@ export default function PsychForm({ initial }: Props) {
   ]
 
   const isEnabled = (cat: string) =>
-    categorias.has(cat as Category) ||
-
-
+    categorias.has(cat as Category)
 
   return (
     <div>
