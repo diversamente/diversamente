@@ -27,9 +27,8 @@ export const ENFOQUES: Approach[] = [
 export const CATEGORIAS: Category[] = [
   'Adulto',
   'Infanto-Juvenil',
-  'Pareja/Familia',
+  'Pareja',
 ]
-
 // ─── Especialidades ───────────────────────────────────────────────────────────
 export const ESPECIALIDADES: Specialty[] = [
   'Abuso',
