@@ -207,10 +207,8 @@ export default function PsychForm({ initial }: Props) {
     { id: 'pareja-prime',   nombre: 'Pareja/Familia',  cat: 'Pareja',           horario: 'prime'  as const },
   ]
 
-  const isEnabled = (cat: string) =>
-    categorias.has(cat as Category) ||
-    (cat === 'Pareja' && (categorias.has('Pareja') || categorias.has('Familia'))) ||
-    (cat === 'Infanto-Juvenil' && categorias.has('Infanto-Juvenil'))
+const isEnabled = (cat: string) =>
+    categorias.has(cat as Category)
 
   return (
     <div>
