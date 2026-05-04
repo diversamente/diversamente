@@ -27,7 +27,7 @@ export const ENFOQUES: Approach[] = [
 export const CATEGORIAS: Category[] = [
   'Adulto',
   'Infanto-Juvenil',
-  'Pareja',
+  'Pareja/Familia',
 ]
 
 // ─── Especialidades ───────────────────────────────────────────────────────────
@@ -121,7 +121,7 @@ export const SAMPLE_PSYCHOLOGISTS: Psychologist[] = [
     correo: 'francisco@diversamente.cl',
     descripcion: 'Psicólogo con enfoque humanista y experiencia trabajando con adultos mayores. Especializado en procesos de duelo, cambios vitales y bienestar en la tercera edad.',
     enfoque: 'Enfoque humanista',
-    categorias: ['Adulto', 'Adulto Mayor'],
+    categorias: ['Adulto'],
     especialidades: ['Duelo', 'Estrés laboral', 'Fobias', 'Trastornos del sueño/insomnio'],
     posgrados: [],
     experiencia: [{ desde: '2018-03', hasta: '', institucion: 'DiversaMente', funciones: 'Psicólogo adultos y adultos mayores' }],
@@ -137,7 +137,7 @@ export const SAMPLE_PSYCHOLOGISTS: Psychologist[] = [
     correo: 'josefa@diversamente.cl',
     descripcion: 'Especialista en psicología infanto-juvenil y familia. Trabajo con niños desde los 5 años hasta adolescentes, utilizando el enfoque sistémico para comprender el contexto familiar.',
     enfoque: 'Terapia con enfoque sistémico',
-    categorias: ['Infanto-Juvenil', 'Familia'],
+    categorias: ['Infanto-Juvenil', 'Pareja/Familia'],
     especialidades: ['Ansiedad', 'Bullying', 'Trastorno espectro autista (TEA)', 'Estrategias de aprendizaje', 'Competencias parentales'],
     posgrados: [{ desde: '2020-03', hasta: '2021-12', institucion: 'UDP', titulo: 'Diplomado en Psicología Infanto-Juvenil' }],
     experiencia: [{ desde: '2021-01', hasta: '', institucion: 'DiversaMente', funciones: 'Psicóloga infanto-juvenil' }],
@@ -153,7 +153,7 @@ export const SAMPLE_PSYCHOLOGISTS: Psychologist[] = [
     correo: 'maribel@diversamente.cl',
     descripcion: 'Psicóloga con certificación en EMDR, especializada en el tratamiento del trauma y estrés postraumático. Trabajo con adultos y parejas que han vivido experiencias difíciles.',
     enfoque: 'EMDR',
-    categorias: ['Adulto', 'Pareja'],
+    categorias: ['Adulto', 'Pareja/Familia'],
     especialidades: ['Trauma', 'Estrés pos traumático', 'Infidelidad', 'Abuso', 'Violencia de genero'],
     posgrados: [{ desde: '2021-06', hasta: '2022-06', institucion: 'EMDR Chile', titulo: 'Certificación EMDR Nivel I y II' }],
     experiencia: [{ desde: '2022-01', hasta: '', institucion: 'DiversaMente', funciones: 'Psicóloga especialista en trauma' }],
@@ -185,7 +185,7 @@ export const SAMPLE_PSYCHOLOGISTS: Psychologist[] = [
     correo: 'camila@diversamente.cl',
     descripcion: 'Especialista en ciclos vitales y transiciones. Acompaño procesos de duelo, infertilidad y adopción con una mirada constructivista y de género.',
     enfoque: 'Constructivista',
-    categorias: ['Adulto', 'Familia', 'Pareja'],
+    categorias: ['Adulto', 'Pareja/Familia'],
     especialidades: ['Depresión pos parto', 'Infertilidad', 'Duelo', 'Procesos de adopción', 'Sexualidad y genero'],
     posgrados: [],
     experiencia: [{ desde: '2019-06', hasta: '', institucion: 'DiversaMente', funciones: 'Psicóloga clínica y familiar' }],
