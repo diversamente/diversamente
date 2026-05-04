@@ -26,10 +26,8 @@ export const ENFOQUES: Approach[] = [
 // ─── Categorías ───────────────────────────────────────────────────────────────
 export const CATEGORIAS: Category[] = [
   'Adulto',
-  'Adulto Mayor',
   'Infanto-Juvenil',
   'Pareja',
-  'Familia',
 ]
 
 // ─── Especialidades ───────────────────────────────────────────────────────────

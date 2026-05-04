@@ -1,6 +1,6 @@
 // ─── Psychologist Types ─────────────────────────────────────────────────────
 
-export type Category = 'Adulto' | 'Adulto Mayor' | 'Infanto-Juvenil' | 'Pareja' | 'Familia'
+export type Category = 'Adulto' | 'Infanto-Juvenil' | 'Pareja'
 
 export type Approach =
   | 'Terapia con enfoque cognitivo conductual'
