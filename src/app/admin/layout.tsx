@@ -13,7 +13,6 @@ const MENU = [
   { href: '/admin/psicologos', icon: Users,           label: 'Psicólogos' },
   { href: '/admin/nuevo',      icon: PlusCircle,      label: 'Nuevo Perfil' },
   { href: '/admin/blog',       icon: FileText,        label: 'Blog' },
-  { href: '/admin/precios',    icon: DollarSign,      label: 'Precios' },
 ]
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
