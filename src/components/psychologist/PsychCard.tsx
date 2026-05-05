@@ -58,7 +58,11 @@ export default function PsychCard({ psych, compact = false }: Props) {
         {/* Footer */}
         <div className="px-4 py-3 border-t border-sage-100 flex items-center justify-between gap-2">
           <div className="text-xs text-sage-400">
-            desde <strong className="text-sage-900 text-sm">$35.000</strong>
+            desde <strong className="text-sage-900 text-sm">
+              {(psych as any).servicios?.length > 0
+               ? '$' + Math.min(...(psych as any).servicios.map((s: any) => s.precio)).toLocaleString('es-CL')
+               : '$35.000'}
+            </strong>
           </div>
           <div className="flex gap-2">
             <button

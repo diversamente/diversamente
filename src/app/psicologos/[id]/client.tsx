@@ -64,7 +64,9 @@ const [showModal, setShowModal] = useState(false)
           </div>
           <div className="md:text-right">
             <p className="text-sm text-sage-400 mb-1">Desde</p>
-            <p className="font-serif text-4xl text-sage-900 font-semibold">$35.000</p>
+            {(psych as any).servicios?.length > 0
+              ? '$' + Math.min(...(psych as any).servicios.map((s: any) => s.precio)).toLocaleString('es-CL')
+              : '$35.000'}
             <p className="text-xs text-sage-400 mb-4">por sesión · 50 min</p>
             <button onClick={() => setShowModal(true)} className="btn-primary text-sm">Reservar Sesión</button>
           </div>
@@ -111,7 +113,9 @@ const [showModal, setShowModal] = useState(false)
               </div>
             </div>
             <div className="bg-sage-500 rounded-2xl p-5 text-white text-center">
-              <p className="font-serif text-2xl font-semibold mb-1">$35.000</p>
+              {(psych as any).servicios?.length > 0
+                ? '$' + Math.min(...(psych as any).servicios.map((s: any) => s.precio)).toLocaleString('es-CL')
+                : '$35.000'}
               <p className="text-sage-100 text-xs mb-4">por sesión · Horario Normal</p>
               <button onClick={() => setShowModal(true)} className="bg-white text-sage-600 hover:bg-sage-50 text-sm font-medium px-5 py-2 rounded-full transition-colors block w-full">
                Reservar Sesión
