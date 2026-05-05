@@ -79,8 +79,18 @@ export default function PsychForm({ initial }: Props) {
     setCellServices({ ...cellServices, [key]: next })
   }
 
-  const updateServicioPrecio = (id: string, precio: number) => {
+const updateServicioPrecio = (id: string, precio: number) => {
     setServicios(prev => prev.map(s => s.id === id ? { ...s, precio } : s))
+  }
+
+  const handlePrecioChange = (id: string, val: string) => {
+    const el = document.activeElement
+    const scrollY = window.scrollY
+    updateServicioPrecio(id, parseInt(val) || 0)
+    requestAnimationFrame(() => {
+      window.scrollTo({ top: scrollY, behavior: 'instant' as any })
+      if (el instanceof HTMLElement) el.focus()
+    })
   }
 
   const updatePosgrado = (i: number, field: keyof PostgradoEntry, val: string) => {
@@ -277,7 +287,7 @@ export default function PsychForm({ initial }: Props) {
                       <div className="relative">
                         <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sage-400 text-sm">$</span>
                         <input type="number" className="input pl-7" value={svc?.precio || 0} step={1000}
-                          onChange={e => updateServicioPrecio(item.id, parseInt(e.target.value) || 0)} />
+                          onChange={e => handlePrecioChange(item.id, e.target.value)} />
                       </div>
                     ) : (
                       <div className="input bg-sage-100 text-sage-300 text-sm cursor-not-allowed">Servicio no habilitado</div>
@@ -302,7 +312,7 @@ export default function PsychForm({ initial }: Props) {
                       <div className="relative">
                         <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sage-400 text-sm">$</span>
                         <input type="number" className="input pl-7" value={svc?.precio || 0} step={1000}
-                          onChange={e => updateServicioPrecio(item.id, parseInt(e.target.value) || 0)} />
+                          onChange={e => handlePrecioChange(item.id, e.target.value)} />
                       </div>
                     ) : (
                       <div className="input bg-sage-100 text-sage-300 text-sm cursor-not-allowed">Servicio no habilitado</div>
