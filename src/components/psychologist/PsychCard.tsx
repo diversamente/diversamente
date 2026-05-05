@@ -16,6 +16,9 @@ export default function PsychCard({ psych, compact = false }: Props) {
   const initials = getInitials(psych.nombre)
   const [showModal, setShowModal] = useState(false)
 
+  const svcs = (psych as any).servicios?.filter((s: any) => s.precio > 0) || []
+  const minPrecio = svcs.length > 0 ? Math.min(...svcs.map((s: any) => s.precio)) : null
+
   return (
     <>
       <div className="card flex flex-col">
@@ -58,23 +61,21 @@ export default function PsychCard({ psych, compact = false }: Props) {
         {/* Footer */}
         <div className="px-4 py-3 border-t border-sage-100 flex items-center justify-between gap-2">
           <div className="text-xs text-sage-400">
-            {(psych as any).servicios?.filter((s: any) => s.precio > 0).length > 0
-              ? <>desde <strong className="text-sage-900 text-sm">${Math.min(...(psych as any).servicios.filter((s: any) => s.precio > 0).map((s: any) => s.precio)).toLocaleString('es-CL')}</strong></>
-              : <span className="text-sage-300 text-xs">Sin servicios</span>
+            {minPrecio
+              ? <>desde <strong className="text-sage-900 text-sm">${minPrecio.toLocaleString('es-CL')}</strong></>
+              : <span className="text-sage-300">Sin servicios</span>
             }
           </div>
           <div className="flex gap-2">
             <button
               onClick={() => setShowModal(true)}
-              className="bg-sage-500 hover:bg-sage-600 text-white text-xs font-medium
-                         px-3 py-1.5 rounded-full transition-colors"
+              className="bg-sage-500 hover:bg-sage-600 text-white text-xs font-medium px-3 py-1.5 rounded-full transition-colors"
             >
               Agendar
             </button>
             <Link
               href={`/psicologos/${psych.id}`}
-              className="border border-sage-300 text-sage-600 hover:bg-sage-50 text-xs font-medium
-                         px-3 py-1.5 rounded-full transition-colors"
+              className="border border-sage-300 text-sage-600 hover:bg-sage-50 text-xs font-medium px-3 py-1.5 rounded-full transition-colors"
             >
               Ver perfil
             </Link>
