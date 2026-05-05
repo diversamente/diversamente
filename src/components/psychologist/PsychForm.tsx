@@ -54,6 +54,12 @@ export default function PsychForm({ initial }: Props) {
   const [saving, setSaving] = useState(false)
   const [error,  setError]  = useState('')
 
+  // Estado local de texto para inputs de precio (evita perder foco al re-renderizar)
+  const [precioTexto, setPrecioTexto] = useState<Record<string, string>>(() => {
+    const svcs = (initial as any)?.servicios || SERVICIOS_BASE.map((s: any) => ({ ...s, precio: s.horario === 'normal' ? 35000 : 45000 }))
+    return Object.fromEntries(svcs.map((s: any) => [s.id, String(s.precio || 0)]))
+  })
+
   const toggleCat = (c: Category) => {
     const s = new Set(categorias); s.has(c) ? s.delete(c) : s.add(c); setCategorias(s)
   }
@@ -79,18 +85,8 @@ export default function PsychForm({ initial }: Props) {
     setCellServices({ ...cellServices, [key]: next })
   }
 
-const updateServicioPrecio = (id: string, precio: number) => {
+  const updateServicioPrecio = (id: string, precio: number) => {
     setServicios(prev => prev.map(s => s.id === id ? { ...s, precio } : s))
-  }
-
-  const handlePrecioChange = (id: string, val: string) => {
-    const el = document.activeElement
-    const scrollY = window.scrollY
-    updateServicioPrecio(id, parseInt(val) || 0)
-    requestAnimationFrame(() => {
-      window.scrollTo({ top: scrollY, behavior: 'instant' as any })
-      if (el instanceof HTMLElement) el.focus()
-    })
   }
 
   const updatePosgrado = (i: number, field: keyof PostgradoEntry, val: string) => {
@@ -286,8 +282,17 @@ const updateServicioPrecio = (id: string, precio: number) => {
                     {enabled ? (
                       <div className="relative">
                         <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sage-400 text-sm">$</span>
-                        <input type="number" className="input pl-7" value={svc?.precio || 0} step={1000}
-                          onChange={e => handlePrecioChange(item.id, e.target.value)} />
+                        <input
+                          type="text"
+                          inputMode="numeric"
+                          className="input pl-7"
+                          value={precioTexto[item.id] ?? String(svc?.precio || '')}
+                          onChange={e => {
+                            const val = e.target.value.replace(/[^0-9]/g, '')
+                            setPrecioTexto(prev => ({ ...prev, [item.id]: val }))
+                            updateServicioPrecio(item.id, parseInt(val) || 0)
+                          }}
+                        />
                       </div>
                     ) : (
                       <div className="input bg-sage-100 text-sage-300 text-sm cursor-not-allowed">Servicio no habilitado</div>
@@ -311,8 +316,17 @@ const updateServicioPrecio = (id: string, precio: number) => {
                     {enabled ? (
                       <div className="relative">
                         <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sage-400 text-sm">$</span>
-                        <input type="number" className="input pl-7" value={svc?.precio || 0} step={1000}
-                          onChange={e => handlePrecioChange(item.id, e.target.value)} />
+                        <input
+                          type="text"
+                          inputMode="numeric"
+                          className="input pl-7"
+                          value={precioTexto[item.id] ?? String(svc?.precio || '')}
+                          onChange={e => {
+                            const val = e.target.value.replace(/[^0-9]/g, '')
+                            setPrecioTexto(prev => ({ ...prev, [item.id]: val }))
+                            updateServicioPrecio(item.id, parseInt(val) || 0)
+                          }}
+                        />
                       </div>
                     ) : (
                       <div className="input bg-sage-100 text-sage-300 text-sm cursor-not-allowed">Servicio no habilitado</div>
