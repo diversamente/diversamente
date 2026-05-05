@@ -11,7 +11,10 @@ export default function AdminPsicologosPage() {
   const [psychs, setPsychs] = useState<Psychologist[]>([])
   const [search, setSearch] = useState('')
 
-  const load = () => setPsychs(getPsychologists())
+  const load = () => {
+    const all = getPsychologists()
+    setPsychs([...all])
+  }
   useEffect(() => { load() }, [])
 
   const filtered = psychs.filter(p =>
@@ -26,7 +29,8 @@ export default function AdminPsicologosPage() {
   const handleDelete = (id: string, name: string) => {
     if (confirm(`¿Eliminar el perfil de ${name}? Esta acción no se puede deshacer.`)) {
       deletePsychologist(id)
-      load()
+      // Forzar recarga desde localStorage
+      setTimeout(() => load(), 100)
     }
   }
 
