@@ -1,32 +1,54 @@
 import type { Psychologist, BlogPost } from '@/types'
 import { SAMPLE_PSYCHOLOGISTS, SAMPLE_BLOG_POSTS } from './data'
 
-const PSYCH_KEY = 'dm_psychologists'
-const BLOG_KEY  = 'dm_blog_posts'
+const PSYCH_KEY   = 'dm_psychologists'
+const DELETED_KEY = 'dm_deleted_ids'
+const BLOG_KEY    = 'dm_blog_posts'
+
+// ─── Deleted IDs tracking ─────────────────────────────────────────────────────
+
+function getDeletedIds(): string[] {
+  if (typeof window === 'undefined') return []
+  try { return JSON.parse(localStorage.getItem(DELETED_KEY) || '[]') } catch { return [] }
+}
+
+function addDeletedId(id: string): void {
+  const ids = getDeletedIds()
+  if (!ids.includes(id)) {
+    ids.push(id)
+    localStorage.setItem(DELETED_KEY, JSON.stringify(ids))
+  }
+}
 
 // ─── Psychologists ────────────────────────────────────────────────────────────
 
 export function getPsychologists(): any[] {
   if (typeof window === 'undefined') return SAMPLE_PSYCHOLOGISTS
   try {
+    const deletedIds = getDeletedIds()
     const raw = localStorage.getItem(PSYCH_KEY)
+
     if (!raw) {
-      // Primera vez: inicializa con los datos de muestra
-      localStorage.setItem(PSYCH_KEY, JSON.stringify(SAMPLE_PSYCHOLOGISTS))
-      return SAMPLE_PSYCHOLOGISTS
+      const initial = SAMPLE_PSYCHOLOGISTS.filter((p: any) => !deletedIds.includes(p.id))
+      localStorage.setItem(PSYCH_KEY, JSON.stringify(initial))
+      return initial
     }
+
     const stored: any[] = JSON.parse(raw)
 
-    // Fusiona: si existe en localStorage usa esos datos (tienen prioridad)
-    // Si hay psicólogos de muestra que no están en localStorage, los agrega
+    // Agrega psicólogos de muestra que no están en localStorage ni fueron eliminados
     const storedIds = new Set(stored.map((p: any) => p.id))
-    const missing = SAMPLE_PSYCHOLOGISTS.filter((p: any) => !storedIds.has(p.id))
+    const missing = SAMPLE_PSYCHOLOGISTS.filter(
+      (p: any) => !storedIds.has(p.id) && !deletedIds.includes(p.id)
+    )
     if (missing.length > 0) {
       const merged = [...stored, ...missing]
       localStorage.setItem(PSYCH_KEY, JSON.stringify(merged))
       return merged
     }
-    return stored
+
+    // Filtra los eliminados por si acaso
+    return stored.filter((p: any) => !deletedIds.includes(p.id))
   } catch {
     return SAMPLE_PSYCHOLOGISTS
   }
@@ -44,30 +66,15 @@ export function savePsychologist(psych: any): void {
 }
 
 export function deletePsychologist(id: string): void {
+  // Registra el ID como eliminado para que no vuelva de SAMPLE_PSYCHOLOGISTS
+  addDeletedId(id)
+  // Elimina del array almacenado
   const all = getPsychologists().filter((p: any) => p.id !== id)
   localStorage.setItem(PSYCH_KEY, JSON.stringify(all))
 }
 
 export function getPsychologistById(id: string): any | undefined {
   return getPsychologists().find((p: any) => p.id === id)
-}
-
-// ─── Forzar reinicio de datos de muestra ─────────────────────────────────────
-// Llama esto desde el admin si los datos están desactualizados
-export function resetSampleData(): void {
-  if (typeof window === 'undefined') return
-  const stored: any[] = JSON.parse(localStorage.getItem(PSYCH_KEY) || '[]')
-
-  // Actualiza cada psicólogo de muestra con sus datos actuales si no han sido editados
-  const updated = stored.map((p: any) => {
-    const sample = SAMPLE_PSYCHOLOGISTS.find((s: any) => s.id === p.id)
-    // Si tiene los servicios del sample original (sin editar por admin), actualiza
-    if (sample && (!p.servicios || p.servicios.length === 0)) {
-      return { ...p, servicios: sample.servicios }
-    }
-    return p
-  })
-  localStorage.setItem(PSYCH_KEY, JSON.stringify(updated))
 }
 
 // ─── Blog ─────────────────────────────────────────────────────────────────────
